@@ -4,4 +4,5 @@ jobs:
   LoadDataset:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "pip install kaggle"
+      - run: pip install kaggle
+      - run: python src/data_loading/copy_config_file.py
