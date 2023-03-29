@@ -6,4 +6,4 @@ jobs:
     steps:
       - run: pip install kaggle
       - run: ls
-      - run: python src/data_loading/copy_config_file.py
+      - run: python ./src/data_loading/copy_config_file.py
