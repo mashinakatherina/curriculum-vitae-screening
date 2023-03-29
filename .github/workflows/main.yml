@@ -7,5 +7,6 @@ jobs:
       - name: checkout repo content
         uses: actions/checkout@v2 # checkout the repository content
       - run: pip install kaggle
-      - run: ls
-      - run: python ./src/data_loading/copy_config_file.py
+      - run: mkdir ~/.kaggle
+      - run: cp ./kaggle.json ~/.kaggle
+      - run: kaggle datasets download leenardeshmukh/curriculum-vitae
