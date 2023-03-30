@@ -11,7 +11,7 @@ jobs:
       - name: download dataset
         env:
           KAGGLE_USERNAME: viacheslavgorash
-          KAGGLE_KEY: ${{secrets.kaggleKey}}
+          KAGGLE_KEY: ${{secrets.KAGGLEKEY}}
         run: kaggle datasets download leenardeshmukh/curriculum-vitae
       - name: unpack dataset archive
         run: unzip curriculum-vitae.zip
@@ -20,5 +20,5 @@ jobs:
       - name: fill database
         env:
           DB_USERNAME: github
-          DB_PASSWORD: ${{secrets.dbPassword}}
+          DB_PASSWORD: ${{secrets.DBPASSWORD}}
         run: python src/data_loading/fill_database.py "Curriculum Vitae.csv"
