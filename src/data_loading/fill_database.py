@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 import sys
 import psycopg2
@@ -5,11 +6,13 @@ from progress.bar import Bar
 
 
 def connect_database():
+    username = os.getenv('DB_USERNAME')
+    password = os.getenv('DB_PASSWORD')
     conn = psycopg2.connect(
         host="vgorash.ddns.net",
         database="ai_architecture",
-        user="github",
-        password="password")
+        user=username,
+        password=password)
     return conn
 
 
