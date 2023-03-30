@@ -15,9 +15,12 @@ def connect_database():
 
 def process_csv(filename):
     df = pd.read_csv(filename)
+    print("Connecting to database")
     connection = connect_database()
     cursor = connection.cursor()
+    print("Cleaning old table")
     cursor.execute("DROP TABLE IF EXISTS dataset")
+    print("Creating new table")
     cursor.execute("CREATE TABLE dataset(id int primary key, resume text, category text)")
     print("Uploading data to database")
     bar = Bar("Upload progress", max=len(df))
