@@ -16,9 +16,23 @@ jobs:
       - name: unpack dataset archive
         run: unzip curriculum-vitae.zip
       - name: install script requirements
-        run: pip install -r requirements.txt
+        run: pip install -r src/requirements_preprocessing.txt
       - name: fill database
         env:
           DB_USERNAME: github
           DB_PASSWORD: ${{secrets.DBPASSWORD}}
-        run: python src/data_loading/fill_database.py "Curriculum Vitae.csv"
+        run: python src/dataset_loading.py "Curriculum Vitae.csv"
+
+  PreprocessDataset:
+    runs-on: ubuntu-latest
+    needs: LoadDataset
+    steps:
+      - name: checkout repo content
+        uses: actions/checkout@v2
+      - name: install script requirements
+        run: pip install -r src/requirements_preprocessing.txt
+      - name: process_data
+        env:
+          DB_USERNAME: github
+          DB_PASSWORD: ${{secrets.DBPASSWORD}}
+        run: python src/dataset_processing.py
