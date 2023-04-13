@@ -15,7 +15,7 @@ models = {"tree": (Tree, "sklearn"), "knn": (KNN, "sklearn"), "nn": (NN, "tensor
 
 def main(model_name):
     with open("../version.txt", "r") as version_file:
-        version = int(version_file.readline())
+        version = int(version_file.readline()) + 1
     if model_name not in models.keys():
         raise Exception("Model with name " + model_name + " is not found")
     connection = connect_database()
