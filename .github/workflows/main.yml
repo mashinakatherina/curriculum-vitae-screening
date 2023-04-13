@@ -6,9 +6,8 @@ jobs:
     steps:
       - name: checkout repo content
         uses: actions/checkout@v2
-      - name: change workdir
-        run: cd src
       - name: update version
+        working-directory: ./src
         run: python update_version.py
       - name: commit changes
         uses: EndBug/add-and-commit@v9.1.1
@@ -21,11 +20,10 @@ jobs:
     steps:
       - name: checkout repo content
         uses: actions/checkout@v2
-      - name: change workdir
-        run: cd src
       - name: install script requirements
         run: pip install -r src/requirements.txt
       - name: train model an save result
+        working-directory: ./src
         env:
           DB_USERNAME: github
           DB_PASSWORD: ${{secrets.DBPASSWORD}}
@@ -37,11 +35,10 @@ jobs:
     steps:
       - name: checkout repo content
         uses: actions/checkout@v2
-      - name: change workdir
-        run: cd src
       - name: install script requirements
         run: pip install -r src/requirements.txt
       - name: train model an save result
+        working-directory: ./src
         env:
           DB_USERNAME: github
           DB_PASSWORD: ${{secrets.DBPASSWORD}}
@@ -53,13 +50,12 @@ jobs:
     steps:
       - name: checkout repo content
         uses: actions/checkout@v2
-      - name: change workdir
-        run: cd src
       - name: install script requirements
         run: pip install -r src/requirements.txt
       - name: install tensorflow
         run: pip install tensorflow keras
       - name: train model an save result
+        working-directory: ./src
         env:
           DB_USERNAME: github
           DB_PASSWORD: ${{secrets.DBPASSWORD}}
