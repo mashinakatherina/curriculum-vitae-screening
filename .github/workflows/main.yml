@@ -53,9 +53,11 @@ jobs:
     steps:
       - name: checkout repo content
         uses: actions/checkout@v3
+      - name: conda env
+        run: conda activate CV_screening
       - name: train model an save result
         working-directory: ./src
         env:
           DB_USERNAME: github
           DB_PASSWORD: ${{secrets.DBPASSWORD}}
-        run: C:\Users\goras\miniconda3\envs\CV_screening\python.exe train_model.py "nn"
+        run: python train_model.py "nn"
