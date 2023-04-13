@@ -3,6 +3,8 @@ on: [workflow_dispatch]
 jobs:
   UpdateVersion:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: checkout repo content
         uses: actions/checkout@v2
