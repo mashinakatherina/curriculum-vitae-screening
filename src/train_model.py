@@ -36,7 +36,7 @@ def main(model_name):
     model.save(os.path.join("saved", filename))
     shutil.make_archive("model", "zip", "saved")
 
-    upload_model(connection, model_name, "model.zip", 1)
+    upload_model(connection, model_name, "model.zip", version)
     connection.close()
 
 
