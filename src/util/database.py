@@ -41,6 +41,7 @@ def save_classes(classes, connection):
     cursor.close()
     connection.commit()
 
+
 def download_dataset(connection, table_name, int_categories=False):
     cursor = connection.cursor()
     cursor.execute(sql.SQL("SELECT * FROM {table}").format(table=sql.Identifier(table_name)))
@@ -55,3 +56,35 @@ def download_dataset(connection, table_name, int_categories=False):
     df = pd.DataFrame({"Id": ids, "Resume": resumes, "Category": categories})
     cursor.close()
     return df
+
+
+def upload_model(connection, table_name, filename, version):
+    cursor = connection.cursor()
+    with open(filename, "rb") as file:
+        cursor.execute(sql.SQL("INSERT INTO {table}(version, model) VALUES (%s, %s)")
+                       .format(table=sql.Identifier(table_name)),
+                       (version, file.read()))
+    cursor.close()
+    connection.commit()
+
+
+def check_model(connection, table_name, version):
+    cursor = connection.cursor()
+    cursor.execute(sql.SQL("SELECT count(*) FROM {table} WHERE version = %s")
+                   .format(table=sql.Identifier(table_name)), str(version))
+
+    value = cursor.fetchone()[0]
+    cursor.close()
+    return value != 0
+
+
+def download_model(connection, table_name, filename, version):
+    if not check_model(connection, table_name, version):
+        raise Exception("Model with version " + str(version) + " is not presented in table " + table_name)
+    cursor = connection.cursor()
+    cursor.execute(sql.SQL("SELECT model FROM {table} WHERE version = %s")
+                   .format(table=sql.Identifier(table_name)), str(version))
+    model = cursor.fetchone()[0]
+    with open(filename, "wb") as file:
+        file.write(model)
+    cursor.close()
