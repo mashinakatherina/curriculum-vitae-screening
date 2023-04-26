@@ -10,7 +10,7 @@ from model.NN import NN
 from util.database import download_dataset, connect_database, upload_model, download_model, check_model
 from util.tokenization import tokenize_dataset
 
-models = {"tree": (Tree, "sklearn"), "knn": (KNN, "sklearn"), "nn": (NN, "tensorflow")}
+from model_names import models
 
 
 def main(model_name):
@@ -27,7 +27,7 @@ def main(model_name):
     df = download_dataset(connection, "dataset_train", int_categories=True)
     x_train, y_train = tokenize_dataset(df)
     params = {}
-    filename = "model.sav" if models[model_name][1] == "sklearn" else "model.h5"
+    filename = "model" + models[model_name][2]
     if models[model_name][1] == "tensorflow":
         y_train = to_categorical(y_train, num_classes=25, dtype='float32')
         params["input_length"] = x_train.shape[1]

@@ -88,3 +88,11 @@ def download_model(connection, table_name, filename, version):
     with open(filename, "wb") as file:
         file.write(model)
     cursor.close()
+
+
+def upload_metrics(connection, accuracy, duration, model_name, version):
+    cursor = connection.cursor()
+    cursor.execute("INSERT INTO metrics (version, model_name, accuracy, duration) VALUES (%s, %s, %s, %s)",
+                   (str(version), model_name, str(accuracy), str(duration)))
+    cursor.close()
+    connection.commit()
