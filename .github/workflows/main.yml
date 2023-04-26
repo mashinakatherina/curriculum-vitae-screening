@@ -101,4 +101,4 @@ jobs:
         env:
           DB_USERNAME: github
           DB_PASSWORD: ${{secrets.DBPASSWORD}}
-        run: python evaluate_model.py "nn"
+        run: conda activate CV_screening; python evaluate_model.py "nn"
