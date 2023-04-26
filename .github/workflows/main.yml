@@ -91,7 +91,7 @@ jobs:
         run: python evaluate_model.py "knn"
 
   EvalNN:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: TrainNN
     steps:
       - name: checkout repo content
