@@ -82,7 +82,7 @@ def check_model(connection, model_name, version):
 
 def download_model_by_id(connection, model_id, filename):
     cursor = connection.cursor()
-    cursor.execute(sql.SQL("SELECT data FROM models WHERE id = %s"), str(model_id))
+    cursor.execute("SELECT data FROM models WHERE id = %s", str(model_id))
     model = cursor.fetchone()[0]
     with open(filename, "wb") as file:
         file.write(model)
