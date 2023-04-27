@@ -58,41 +58,47 @@ def download_dataset(connection, table_name, int_categories=False):
     return df
 
 
-def upload_model(connection, table_name, filename, version):
+def upload_model(connection, model_name, filename, version):
     cursor = connection.cursor()
     with open(filename, "rb") as file:
-        cursor.execute(sql.SQL("INSERT INTO {table}(version, model) VALUES (%s, %s)")
-                       .format(table=sql.Identifier(table_name)),
-                       (version, file.read()))
+        cursor.execute("INSERT INTO models (version, model_name, data) VALUES (%s, %s, %s)",
+                       (str(version), model_name, file.read()))
     cursor.close()
     connection.commit()
 
 
-def check_model(connection, table_name, version):
+def check_model(connection, model_name, version):
     cursor = connection.cursor()
-    cursor.execute(sql.SQL("SELECT count(*) FROM {table} WHERE version = %s")
-                   .format(table=sql.Identifier(table_name)), str(version))
+    cursor.execute("SELECT count(*) FROM models WHERE version = %s and model_name = %s", (str(version), model_name))
 
-    value = cursor.fetchone()[0]
+    if cursor.fetchone()[0] > 0:
+        cursor.execute("SELECT id FROM models WHERE version = %s and model_name = %s", (str(version), model_name))
+        value = cursor.fetchone()[0]
+        cursor.close()
+        return value
     cursor.close()
-    return value != 0
+    return None
 
 
-def download_model(connection, table_name, filename, version):
-    if not check_model(connection, table_name, version):
-        raise Exception("Model with version " + str(version) + " is not presented in table " + table_name)
+def download_model_by_id(connection, model_id, filename):
     cursor = connection.cursor()
-    cursor.execute(sql.SQL("SELECT model FROM {table} WHERE version = %s")
-                   .format(table=sql.Identifier(table_name)), str(version))
+    cursor.execute(sql.SQL("SELECT data FROM models WHERE id = %s"), str(model_id))
     model = cursor.fetchone()[0]
     with open(filename, "wb") as file:
         file.write(model)
     cursor.close()
 
 
-def upload_metrics(connection, accuracy, duration, model_name, version):
+def download_model(connection, model_name, filename, version):
+    model_id = check_model(connection, model_name, version)
+    if model_id is None:
+        raise Exception("Model " + model_name + " with version " + str(version) + " is not presented in table")
+    download_model_by_id(connection, model_id, filename)
+
+
+def upload_metrics(connection, accuracy, duration, model_id):
     cursor = connection.cursor()
-    cursor.execute("INSERT INTO metrics (version, model_name, accuracy, duration) VALUES (%s, %s, %s, %s)",
-                   (str(version), model_name, str(accuracy), str(duration)))
+    cursor.execute("INSERT INTO metrics (accuracy, duration, model_id) VALUES (%s, %s, %s)",
+                   (str(accuracy), str(duration), str(model_id)))
     cursor.close()
     connection.commit()

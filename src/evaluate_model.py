@@ -5,7 +5,7 @@ import time
 
 import numpy as np
 
-from util.database import download_dataset, connect_database, upload_metrics, download_model, check_model
+from util.database import download_dataset, connect_database, upload_metrics, download_model_by_id, check_model
 from util.tokenization import tokenize_dataset
 
 from sklearn.metrics import accuracy_score
@@ -23,13 +23,14 @@ def main(model_name):
     if model_name not in models.keys():
         raise Exception("Model with name " + model_name + " is not found")
     connection = connect_database()
-    if not check_model(connection, model_name, version):
+    model_id = check_model(connection, model_name, version)
+    if model_id is None:
         raise Exception("Model with name " + model_name + " and version " + str(version) + " is not exists in "
                                                                                            "database")
     df = download_dataset(connection, "dataset_test", int_categories=True)
     x_test, y_test = tokenize_dataset(df)
 
-    download_model(connection, model_name, "loaded.zip", version)
+    download_model_by_id(connection, model_id, "loaded.zip")
     os.makedirs("loaded")
     shutil.unpack_archive("loaded.zip", "loaded", "zip")
     params = {}
@@ -45,7 +46,7 @@ def main(model_name):
         preds = np.array([np.argmax(i) for i in preds])
     accuracy = calculate_accuracy(preds, y_test)
 
-    upload_metrics(connection, accuracy, duration, model_name, version)
+    upload_metrics(connection, accuracy, duration, model_id)
 
 
 if __name__ == "__main__":

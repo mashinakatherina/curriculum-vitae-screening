@@ -19,7 +19,8 @@ def main(model_name):
     if model_name not in models.keys():
         raise Exception("Model with name " + model_name + " is not found")
     connection = connect_database()
-    if check_model(connection, model_name, version):
+    model_id = check_model(connection, model_name, version)
+    if model_id is not None:
         raise Exception("Model with name " + model_name + " and version " + str(version) + " is already exists in "
                                                                                            "database")
     if not os.path.isdir("./saved"):
