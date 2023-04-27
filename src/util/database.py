@@ -102,3 +102,37 @@ def upload_metrics(connection, accuracy, duration, model_id):
                    (str(accuracy), str(duration), str(model_id)))
     cursor.close()
     connection.commit()
+
+
+def get_metrics(connection, version):
+    cursor = connection.cursor()
+    cursor.execute("SELECT count(*)"
+                   " FROM metrics inner join models m on m.id = metrics.model_id where version = %s", str(version))
+    if cursor.fetchone()[0] > 0:
+        cursor.execute("SELECT id, accuracy, duration"
+                       " FROM metrics inner join models m on m.id = metrics.model_id where version = %s", str(version))
+        values = cursor.fetchall()
+        cursor.close()
+        return values
+    cursor.close()
+    return None
+
+
+def get_deployment(connection, version):
+    cursor = connection.cursor()
+    cursor.execute("SELECT count(*) FROM deployments where version = %s", str(version))
+    if cursor.fetchone()[0] > 0:
+        cursor.execute("SELECT model_id, score FROM deployments where version = %s", str(version))
+        value = cursor.fetchone()
+        cursor.close()
+        return value
+    cursor.close()
+    return None
+
+
+def add_deployment(connection, version, deployment):
+    cursor = connection.cursor()
+    cursor.execute("INSERT INTO deployments (version, model_id, score) VALUES (%s, %s, %s)",
+                   (version, str(deployment[0]), str(deployment[1])))
+    cursor.close()
+    connection.commit()

@@ -48,6 +48,8 @@ def main(model_name):
 
     upload_metrics(connection, accuracy, duration, model_id)
 
+    connection.close()
+
 
 if __name__ == "__main__":
     main(sys.argv[1])
