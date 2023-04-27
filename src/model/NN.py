@@ -29,7 +29,7 @@ class NN(Model):
         return model
 
     def fit(self, x, y):
-        self._model.fit(x, y, batch_size=64, epochs=20, verbose=1)
+        self._model.fit(x, y, batch_size=64, epochs=12, verbose=1)
 
     def save(self, filename):
         self._model.save(filename)
