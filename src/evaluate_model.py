@@ -5,7 +5,7 @@ import time
 
 import numpy as np
 
-from util.database import download_dataset, connect_database, upload_metrics, download_model_by_id, check_model
+from util.database import download_dataset, connect_database, upload_metrics, download_model, check_model
 from util.tokenization import tokenize_dataset
 
 from sklearn.metrics import accuracy_score
@@ -30,7 +30,7 @@ def main(model_name):
     df = download_dataset(connection, "dataset_test", int_categories=True)
     x_test, y_test = tokenize_dataset(df)
 
-    download_model_by_id(connection, model_id, "loaded.zip")
+    download_model(connection, model_name, "loaded.zip", version)
     os.makedirs("loaded")
     shutil.unpack_archive("loaded.zip", "loaded", "zip")
     params = {}
