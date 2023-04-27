@@ -8,4 +8,4 @@ class Tree(Model):
         super().__init__(params, filepath)
 
     def _init_model(self, params):
-        return tree.DecisionTreeClassifier()
+        return tree.DecisionTreeClassifier(min_samples_leaf=30)
