@@ -84,8 +84,20 @@ def download_model(connection, model_name, filename, version):
     model_id = check_model(connection, model_name, version)
     if model_id is None:
         raise Exception("Model " + model_name + " with version " + str(version) + " is not presented in table")
+    download_model_by_id(connection, model_id, filename)
+
+
+def get_model_info_by_id(connection, model_id):
     cursor = connection.cursor()
-    cursor.execute("SELECT data FROM models WHERE version = %s and model_name = %s", (str(version), model_name))
+    cursor.execute("SELECT model_name, version FROM models WHERE id = %s", (str(model_id),))
+    value = cursor.fetchone()
+    cursor.close()
+    return value
+
+
+def download_model_by_id(connection, model_id, filename):
+    cursor = connection.cursor()
+    cursor.execute("SELECT data FROM models WHERE id = %s", (str(model_id),))
     model = cursor.fetchone()[0]
     with open(filename, "wb") as file:
         file.write(model)

@@ -6,6 +6,7 @@ from nltk.corpus import stopwords
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
 from util.database import connect_database, save_dataset, download_dataset, save_classes
+from tokenization import fit_tokenizer
 
 
 def convert_to_lower_case(df):
@@ -67,15 +68,19 @@ def encode_labels(df):
     return encoder.classes_
 
 
-
-def main():
-    connection = connect_database()
-    df = download_dataset(connection, "dataset_raw")
+def preprocess_dataset(df):
     convert_to_lower_case(df)
     remove_short_words(df)
     remove_punctuations(df)
     apply_lemmatization(df)
+
+
+def main():
+    connection = connect_database()
+    df = download_dataset(connection, "dataset_raw")
+    preprocess_dataset(df)
     classes = encode_labels(df)
+    fit_tokenizer(df)
     df_train, df_test = train_test_split(df, test_size=0.3, random_state=42, stratify=df["Category"])
     save_dataset(df_train, connection, "dataset_train")
     save_dataset(df_test, connection, "dataset_test")

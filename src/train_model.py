@@ -4,11 +4,8 @@ import shutil
 
 from keras.utils import to_categorical
 
-from model.Tree import Tree
-from model.KNN import KNN
-from model.NN import NN
 from util.database import download_dataset, connect_database, upload_model, check_model
-from util.tokenization import tokenize_dataset
+from src.tokenization import tokenize_dataset
 
 from model_names import models
 

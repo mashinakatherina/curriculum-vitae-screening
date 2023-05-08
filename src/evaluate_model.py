@@ -6,7 +6,7 @@ import time
 import numpy as np
 
 from util.database import download_dataset, connect_database, upload_metrics, download_model, check_model
-from util.tokenization import tokenize_dataset
+from src.tokenization import tokenize_dataset
 
 from sklearn.metrics import accuracy_score
 
