@@ -5,7 +5,7 @@ import shutil
 from keras.utils import to_categorical
 
 from util.database import download_dataset, connect_database, upload_model, check_model
-from src.tokenization import tokenize_dataset
+from tokenization import tokenize_dataset
 
 from model_names import models
 
