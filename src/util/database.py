@@ -144,3 +144,11 @@ def add_deployment(connection, version, deployment):
                    (version, str(deployment[0]), str(deployment[1])))
     cursor.close()
     connection.commit()
+
+
+def get_category_name(connection, category):
+    cursor = connection.cursor()
+    cursor.execute("SELECT label from classes where id = %s", (str(category),))
+    value = cursor.fetchone()
+    cursor.close()
+    return value[0]

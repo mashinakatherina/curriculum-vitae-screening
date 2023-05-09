@@ -20,13 +20,21 @@ def fit_tokenizer(df):
     connection.close()
 
 
-def tokenize_dataset(df):
+def load_tokenizer():
     connection = connect_database()
     download_model(connection, "tokenizer", "tokenizer_loaded.zip", 0)
     os.makedirs("tokenizer_loaded")
     shutil.unpack_archive("tokenizer_loaded.zip", "tokenizer_loaded", "zip")
     with open(os.path.join("tokenizer_loaded", "tokenizer.sav"), "rb") as file:
         cv = pickle.load(file)
+    return cv
+
+
+def tokenize_dataset(df, tokenizer=None):
+    if tokenizer is None:
+        cv = load_tokenizer()
+    else:
+        cv = tokenizer
     x = cv.transform(df['Resume']).toarray()
     y = df['Category']
     return x, y
