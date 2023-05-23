@@ -60,6 +60,19 @@ jobs:
           DB_PASSWORD: ${{secrets.DBPASSWORD}}
         run: conda activate CV_screening; python train_model.py "nn"
 
+  QuantizeNN:
+    runs-on: self-hosted
+    needs: TrainNN
+    steps:
+      - name: checkout repo content
+        uses: actions/checkout@v3
+      - name: quantize model an save result
+        working-directory: ./src
+        env:
+          DB_USERNAME: github
+          DB_PASSWORD: ${{secrets.DBPASSWORD}}
+        run: conda activate CV_screening; python quantize_nn.py
+
   EvalTree:
     runs-on: ubuntu-latest
     needs: TrainTree
@@ -103,9 +116,22 @@ jobs:
           DB_PASSWORD: ${{secrets.DBPASSWORD}}
         run: conda activate CV_screening; python evaluate_model.py "nn"
 
+  EvalQuantizedNN:
+    runs-on: self-hosted
+    needs: QuantizeNN
+    steps:
+      - name: checkout repo content
+        uses: actions/checkout@v3
+      - name: eval model
+        working-directory: ./src
+        env:
+          DB_USERNAME: github
+          DB_PASSWORD: ${{secrets.DBPASSWORD}}
+        run: conda activate CV_screening; python evaluate_model.py "tflight"
+
   SelectModel:
     runs-on: ubuntu-latest
-    needs: [EvalTree, EvalKNN, EvalNN]
+    needs: [EvalTree, EvalKNN, EvalNN, EvalQuantizedNN]
     steps:
       - name: checkout repo content
         uses: actions/checkout@v3
